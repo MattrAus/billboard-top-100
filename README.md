@@ -23,7 +23,7 @@ This version includes significant improvements:
 ## Installation
 
 ```bash
-npm install billboard-top-100
+npm install @aribradshaw/billboard-top-100
 ```
 
 ## Usage
@@ -31,7 +31,7 @@ npm install billboard-top-100
 ### ES Modules (Recommended)
 
 ```javascript
-import { getChart, listCharts } from 'billboard-top-100';
+import { getChart, listCharts } from '@aribradshaw/billboard-top-100';
 
 // Get current Hot 100 chart
 getChart('hot-100', (err, chart) => {
@@ -70,7 +70,7 @@ listCharts((err, charts) => {
 ### CommonJS (Legacy)
 
 ```javascript
-const { getChart, listCharts } = require('billboard-top-100');
+const { getChart, listCharts } = require('@aribradshaw/billboard-top-100');
 
 // Same usage as above
 ```
