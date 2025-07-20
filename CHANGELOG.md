@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.3] - 2025-01-27
+
+### Fixed
+- npm token configuration for automatic publishing
+- CI/CD workflow verification with proper authentication
+
 ## [3.0.2] - 2025-01-27
 
 ### Fixed
