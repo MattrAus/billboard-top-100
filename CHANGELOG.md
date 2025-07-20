@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.2] - 2025-01-27
+
+### Fixed
+- Final CI/CD workflow fixes and version bump
+
 ## [3.0.1] - 2025-01-27
 
 ### Fixed
