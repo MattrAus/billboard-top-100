@@ -152,7 +152,7 @@ getChart('hot-100', (err, chart) => {
 
 ### Prerequisites
 
-- Node.js 16.0.0 or higher
+- Node.js 18.0.0 or higher
 - npm
 
 ### Setup
