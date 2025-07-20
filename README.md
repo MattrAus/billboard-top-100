@@ -12,6 +12,7 @@ This version includes significant improvements:
 - ✅ **Improved Test Reliability**: Fixed timeout issues and improved test stability
 - ✅ **Better CI/CD**: Updated GitHub Actions to test against Node.js 18 and 20
 - ✅ **Stable CI/CD Pipeline**: All workflows now properly configured for Node.js 18+
+- ✅ **npm Token Configured**: Repository secrets updated for automatic publishing
 
 ## Features
 
