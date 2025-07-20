@@ -1,90 +1,211 @@
-﻿<h1 align="left">
-  <img src="logo.png" width="64%" />
-  <br />
-</h1>
+﻿# Billboard Top 100
 
-Node.js API to retrieve top songs, albums, and artists from Billboard's charts
+A modern Node.js library for fetching Billboard chart data. This is a fork of the original [billboard-top-100](https://github.com/darthbatman/billboard-top-100) library, updated to use modern dependencies and ES modules.
 
-![](https://github.com/darthbatman/billboard-top-100/actions/workflows/build.yml/badge.svg)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/darthbatman/billboard-top-100)
-[![](https://img.shields.io/badge/donate-PayPal-green.svg)](https://www.paypal.com/donate/?business=WNNFJMBY2ETG4&no_recurring=0&currency_code=USD)
+## Features
 
-## install
+- ✅ **Modern Dependencies**: Uses `node-fetch` instead of deprecated `request` package
+- ✅ **ES Modules**: Full ES module support with `import`/`export`
+- ✅ **Security Updates**: Updated all dependencies to latest secure versions
+- ✅ **No Deprecation Warnings**: All deprecated packages have been replaced
+- ✅ **TypeScript Ready**: Can be easily used in TypeScript projects
+
+## Installation
 
 ```bash
 npm install billboard-top-100
 ```
 
-## example
+## Usage
 
-### getChart
+### ES Modules (Recommended)
 
-```js
-const { getChart } = require('billboard-top-100');
+```javascript
+import { getChart, listCharts } from 'billboard-top-100';
 
-// date format YYYY-MM-DD
-getChart('hot-100', '2016-08-27', (err, chart) => {
-  if (err) console.log(err);
-  // week of the chart in the date format YYYY-MM-DD
-  console.log(chart.week);
-  // URL of the previous week's chart
-  console.log(chart.previousWeek.url);
-  // date of the previous week's chart in the date format YYYY-MM-DD
-  console.log(chart.previousWeek.date);
-  // URL of the next week's chart
-  console.log(chart.nextWeek.url);
-  // date of the next week's chart in the date format YYYY-MM-DD
-  console.log(chart.nextWeek.date);
-  // array of top 100 songs for week of August 27, 2016
-  console.log(chart.songs);
-  // song with rank: 4 for week of August 27, 2016
-  console.log(chart.songs[3]);
-  // title of top song for week of August 27, 2016
-  console.log(chart.songs[0].title);
-  // artist of top songs for week of August 27, 2016
-  console.log(chart.songs[0].artist);
-  // rank of top song (1) for week of August 27, 2016
-  console.log(chart.songs[0].rank);
-  // URL for Billboard cover image of top song for week of August 27, 2016
-  console.log(chart.songs[0].cover);
-  // position info of top song
-  console.log(chart.songs[0].position.positionLastWeek);
-  console.log(chart.songs[0].position.peakPosition);
-  console.log(chart.songs[0].position.weeksOnChart);
+// Get current Hot 100 chart
+getChart('hot-100', (err, chart) => {
+  if (err) {
+    console.error('Error:', err);
+    return;
+  }
+  
+  console.log('Week of:', chart.week);
+  console.log('Number 1 song:', chart.songs[0]);
 });
 
-// chartName defaults to hot-100
-// date defaults to Saturday of this week
-getChart((err, chart) => {
-  if (err) console.log(err);
-  console.log(chart);
+// Get a specific week's chart
+getChart('hot-100', '2023-12-30', (err, chart) => {
+  if (err) {
+    console.error('Error:', err);
+    return;
+  }
+  
+  console.log('Chart for week of:', chart.week);
+  console.log('Previous week:', chart.previousWeek);
+  console.log('Next week:', chart.nextWeek);
 });
 
-// date defaults to Saturday of this week
-getChart('rock-digital-song-sales', (err, chart) => {
-  if (err) console.log(err);
-  console.log(chart);
-});
-```
-
-### listCharts
-
-```js
-// list all charts
-const { listCharts } = require('billboard-top-100');
-
+// List all available charts
 listCharts((err, charts) => {
-  if (err) console.log(err);
-  // array of all charts
-  console.log(charts);
+  if (err) {
+    console.error('Error:', err);
+    return;
+  }
+  
+  console.log('Available charts:', charts);
 });
 ```
 
-## license
+### CommonJS (Legacy)
 
-MIT © [Rishi Masand](https://github.com/darthbatman)
+```javascript
+const { getChart, listCharts } = require('billboard-top-100');
 
-## donation
-If you find `billboard-top-100` useful and would like to support the developer, please consider donating. Thank you.
+// Same usage as above
+```
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?business=WNNFJMBY2ETG4&no_recurring=0&currency_code=USD)
+## API Reference
+
+### `getChart(chartName, date, callback)`
+
+Fetches a specific Billboard chart.
+
+**Parameters:**
+- `chartName` (string): The name of the chart (e.g., 'hot-100', 'latin-songs', 'artist-100')
+- `date` (string, optional): The date in YYYY-MM-DD format. If omitted, gets the current week's chart
+- `callback` (function): Callback function with signature `(error, chart)`
+
+**Returns:**
+- `chart` object with the following structure:
+  ```javascript
+  {
+    week: '2023-12-30',
+    previousWeek: {
+      date: '2023-12-23',
+      url: 'http://www.billboard.com/charts/hot-100/2023-12-23'
+    },
+    nextWeek: {
+      date: '2024-01-06',
+      url: 'http://www.billboard.com/charts/hot-100/2024-01-06'
+    },
+    songs: [
+      {
+        rank: 1,
+        title: 'Song Title',
+        artist: 'Artist Name',
+        cover: 'https://charts-static.billboard.com/img/...',
+        position: {
+          positionLastWeek: 1,
+          peakPosition: 1,
+          weeksOnChart: 14
+        }
+      }
+      // ... more songs
+    ]
+  }
+  ```
+
+### `listCharts(callback)`
+
+Lists all available Billboard charts.
+
+**Parameters:**
+- `callback` (function): Callback function with signature `(error, charts)`
+
+**Returns:**
+- `charts` array with objects containing:
+  ```javascript
+  [
+    {
+      name: 'Hot 100',
+      url: 'http://www.billboard.com/charts/hot-100'
+    }
+    // ... more charts
+  ]
+  ```
+
+## Available Charts
+
+- `hot-100` - Billboard Hot 100
+- `latin-songs` - Hot Latin Songs
+- `artist-100` - Artist 100
+- And many more! Use `listCharts()` to see all available charts.
+
+## Error Handling
+
+The library uses callback-style error handling:
+
+```javascript
+getChart('hot-100', (err, chart) => {
+  if (err) {
+    console.error('Error fetching chart:', err);
+    return;
+  }
+  
+  // Use chart data
+  console.log(chart);
+});
+```
+
+## Development
+
+### Prerequisites
+
+- Node.js 16.0.0 or higher
+- npm
+
+### Setup
+
+```bash
+git clone https://github.com/aribradshaw/billboard-top-100.git
+cd billboard-top-100
+npm install
+```
+
+### Running Tests
+
+```bash
+npm test
+```
+
+### Linting
+
+```bash
+npm run lint
+```
+
+## Changes from Original
+
+This fork includes the following improvements over the original library:
+
+1. **Modern Dependencies**:
+   - Replaced deprecated `request` package with `node-fetch`
+   - Updated all dependencies to latest versions
+   - Removed security vulnerabilities
+
+2. **ES Module Support**:
+   - Full ES module support with `import`/`export`
+   - Compatible with modern Node.js applications
+   - TypeScript-friendly
+
+3. **Better Error Handling**:
+   - Improved error messages
+   - More robust HTTP request handling
+
+4. **Code Quality**:
+   - Updated ESLint configuration
+   - Better code formatting
+   - Removed deprecated code patterns
+
+## License
+
+MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Disclaimer
+
+This library scrapes Billboard's website. Please be respectful of their servers and use this library responsibly. Billboard's terms of service should be reviewed before using this library in production applications.

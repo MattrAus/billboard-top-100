@@ -1,6 +1,5 @@
-const { assert } = require('chai');
-
-const { getChart, listCharts } = require('../billboard-top-100');
+import { assert } from 'chai';
+import { getChart, listCharts } from '../billboard-top-100.js';
 
 describe('getChart()', () => {
   describe('get a past chart (hot-100: week of 2016-11-19)', () => {
