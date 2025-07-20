@@ -13,6 +13,8 @@ This version includes significant improvements:
 - ✅ **Better CI/CD**: Updated GitHub Actions to test against Node.js 18 and 20
 - ✅ **Stable CI/CD Pipeline**: All workflows now properly configured for Node.js 18+
 - ✅ **npm Token Configured**: Repository secrets updated for automatic publishing
+- ✅ **No Deprecated Dependencies**: Removed all deprecated packages (node-fetch, har-validator, etc.)
+- ✅ **Native Fetch**: Uses Node.js 18+ native fetch for better performance
 
 ## Features
 

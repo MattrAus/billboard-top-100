@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - npm token configuration for automatic publishing
 - CI/CD workflow verification with proper authentication
+- **Removed deprecated dependencies**: Eliminated `node-fetch`, `har-validator`, `uuid@3.4.0`, and `request@2.88.2`
+- **Updated to native fetch**: Now uses Node.js 18+ native `fetch` instead of `node-fetch`
+- **Updated all dependencies**: Upgraded to latest stable versions
 
 ## [3.0.2] - 2025-01-27
 

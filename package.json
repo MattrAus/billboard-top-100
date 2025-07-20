@@ -8,14 +8,13 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
-    "moment": "^2.29.4",
-    "node-fetch": "^2.7.0"
+    "moment": "^2.29.4"
   },
   "devDependencies": {
-    "chai": "^4.3.7",
-    "eslint": "^8.55.0",
+    "chai": "^5.2.1",
+    "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
-    "mocha": "^10.2.0"
+    "mocha": "^11.7.1"
   },
   "scripts": {
     "lint": "eslint billboard-top-100.js test/test.js",
