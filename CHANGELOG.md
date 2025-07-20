@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.4] - 2025-01-27
+
+### Fixed
+- **Complete dependency cleanup**: All deprecated packages removed
+- **Native fetch implementation**: Uses Node.js 18+ native fetch for better performance
+- **Regenerated package-lock.json**: Synced with updated dependencies
+- **Clean npm installs**: No more deprecated warnings when installing
+
 ## [3.0.3] - 2025-01-27
 
 ### Fixed
