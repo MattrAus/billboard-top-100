@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.1] - 2025-01-27
+
+### Fixed
+- Fixed CI/CD workflow to use Node.js 18 instead of 16
+- Resolved npm publish workflow Node.js version mismatch
+
 ## [3.0.0] - 2025-01-27
 
 ### Added
