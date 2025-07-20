@@ -23,45 +23,63 @@ describe('getChart()', () => {
           position: { positionLastWeek: 1, peakPosition: 1, weeksOnChart: 14 },
         }, 'first song is correct');
 
-        // Note: Billboard has updated their image URLs over time, so we test for the presence of a cover URL rather than exact match
+        // Note: Billboard has updated their image URLs over time, so we test for the presence
+        // of a cover URL rather than exact match
         assert(chart.songs[37], 'arbitrary (38th) song exists');
         assert.equal(chart.songs[37].rank, 38, 'arbitrary (38th) song has correct rank');
-        assert.equal(chart.songs[37].title, 'Tiimmy Turner', 'arbitrary (38th) song has correct title');
-        assert.equal(chart.songs[37].artist, 'Desiigner', 'arbitrary (38th) song has correct artist');
+        assert.equal(
+          chart.songs[37].title,
+          'Tiimmy Turner',
+          'arbitrary (38th) song has correct title',
+        );
+        assert.equal(
+          chart.songs[37].artist,
+          'Desiigner',
+          'arbitrary (38th) song has correct artist',
+        );
         assert(chart.songs[37].cover, 'arbitrary (38th) song has a cover URL');
         assert(chart.songs[37].position, 'arbitrary (38th) song has position data');
         assert.equal(
           chart.songs[37].position.positionLastWeek,
           37,
-          'arbitrary (38th) song has correct last week position'
+          'arbitrary (38th) song has correct last week position',
         );
         assert.equal(
           chart.songs[37].position.peakPosition,
           34,
-          'arbitrary (38th) song has correct peak position'
+          'arbitrary (38th) song has correct peak position',
         );
         assert.equal(
           chart.songs[37].position.weeksOnChart,
           15,
-          'arbitrary (38th) song has correct weeks on chart'
+          'arbitrary (38th) song has correct weeks on chart',
         );
 
-        // Note: Billboard has updated their image URLs over time, so we test for the presence of a cover URL rather than exact match
+        // Note: Billboard has updated their image URLs over time, so we test for the presence
+        // of a cover URL rather than exact match
         assert(chart.songs[99], 'last song exists');
         assert.equal(chart.songs[99].rank, 100, 'last song has correct rank');
-        assert.equal(chart.songs[99].title, 'Cool Girl', 'last song has correct title');
-        assert.equal(chart.songs[99].artist, 'Tove Lo', 'last song has correct artist');
+        assert.equal(
+          chart.songs[99].title,
+          'Cool Girl',
+          'last song has correct title',
+        );
+        assert.equal(
+          chart.songs[99].artist,
+          'Tove Lo',
+          'last song has correct artist',
+        );
         assert(chart.songs[99].cover, 'last song has a cover URL');
         assert(chart.songs[99].position, 'last song has position data');
         assert.equal(
           chart.songs[99].position.peakPosition,
           84,
-          'last song has correct peak position'
+          'last song has correct peak position',
         );
         assert.equal(
           chart.songs[99].position.weeksOnChart,
           5,
-          'last song has correct weeks on chart'
+          'last song has correct weeks on chart',
         );
 
         done();
