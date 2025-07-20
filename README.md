@@ -2,6 +2,16 @@
 
 A modern Node.js library for fetching Billboard chart data. This is a fork of the original [billboard-top-100](https://github.com/darthbatman/billboard-top-100) library, updated to use modern dependencies and ES modules.
 
+## Version 3.0.0 - Major Update
+
+This version includes significant improvements:
+
+- ✅ **Node.js 18+ Support**: Updated to require Node.js 18+ for better performance and modern features
+- ✅ **Fixed ReadableStream Issue**: Resolved the `ReadableStream is not defined` error that was breaking CI/CD
+- ✅ **Updated Dependencies**: All dependencies updated to latest stable versions
+- ✅ **Improved Test Reliability**: Fixed timeout issues and improved test stability
+- ✅ **Better CI/CD**: Updated GitHub Actions to test against Node.js 18 and 20
+
 ## Features
 
 - ✅ **Modern Dependencies**: Uses `node-fetch` instead of deprecated `request` package

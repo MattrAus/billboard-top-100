@@ -50,7 +50,8 @@
   "files": [
     "billboard-top-100.js",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "exports": {
     ".": {
