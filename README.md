@@ -1,38 +1,41 @@
 ﻿# Billboard Top 100
 
-A modern Node.js library for fetching Billboard chart data. This is a fork of the original [billboard-top-100](https://github.com/darthbatman/billboard-top-100) library, updated to use modern dependencies and ES modules.
+A Node.js library for fetching Billboard chart data. This library provides easy access to current and historical Billboard charts including Hot 100, Artist 100, Latin Songs, and many more.
 
-## Version 3.0.4 - Latest Release
+## 🚀 Features
 
-This version includes significant improvements:
+- **Current Charts**: Get the latest week's chart data
+- **Historical Charts**: Access charts from any specific date
+- **Multiple Chart Types**: Support for 288+ different Billboard charts
+- **Robust Error Handling**: Graceful handling of edge cases and network issues
+- **Production Ready**: Comprehensive test coverage and error handling
+- **Modern Architecture**: Built with Node.js 18+ native fetch and ES modules
 
-- ✅ **Node.js 18+ Support**: Updated to require Node.js 18+ for better performance and modern features
-- ✅ **Fixed ReadableStream Issue**: Resolved the `ReadableStream is not defined` error that was breaking CI/CD
-- ✅ **Updated Dependencies**: All dependencies updated to latest stable versions
-- ✅ **Improved Test Reliability**: Fixed timeout issues and improved test stability
-- ✅ **Better CI/CD**: Updated GitHub Actions to test against Node.js 18 and 20
-- ✅ **Stable CI/CD Pipeline**: All workflows now properly configured for Node.js 18+
-- ✅ **npm Token Configured**: Repository secrets updated for automatic publishing
-- ✅ **No Deprecated Dependencies**: Removed all deprecated packages (node-fetch, har-validator, etc.)
-- ✅ **Native Fetch**: Uses Node.js 18+ native fetch for better performance
+## 📋 Supported Charts
 
-## Features
+The library supports all major Billboard charts including:
 
-- ✅ **Modern Dependencies**: Uses `node-fetch` instead of deprecated `request` package
-- ✅ **ES Modules**: Full ES module support with `import`/`export`
-- ✅ **Security Updates**: Updated all dependencies to latest secure versions
-- ✅ **No Deprecation Warnings**: All deprecated packages have been replaced
-- ✅ **TypeScript Ready**: Can be easily used in TypeScript projects
+- **Hot 100** - Top 100 songs
+- **Artist 100** - Top 100 artists
+- **Latin Songs** - Top 50 Latin songs
+- **R&B/Hip-Hop Songs** - Top 50 R&B and hip-hop songs
+- **Country Songs** - Top 60 country songs
+- **Rock Songs** - Top 50 rock songs
+- **Pop Songs** - Top 40 pop songs
+- **Dance/Electronic Songs** - Top 50 dance and electronic songs
+- And 280+ more charts!
 
-## Installation
+## 🛠️ Installation
 
 ```bash
 npm install @aribradshaw/billboard-top-100
 ```
 
-## Usage
+**Requirements**: Node.js 18.0.0 or higher
 
-### ES Modules (Recommended)
+## 📖 Usage
+
+### Basic Usage
 
 ```javascript
 import { getChart, listCharts } from '@aribradshaw/billboard-top-100';
@@ -44,182 +47,212 @@ getChart('hot-100', (err, chart) => {
     return;
   }
   
-  console.log('Week of:', chart.week);
-  console.log('Number 1 song:', chart.songs[0]);
+  console.log(`Week of: ${chart.week}`);
+  console.log(`#1 Song: ${chart.songs[0].title} by ${chart.songs[0].artist}`);
+  console.log(`Total Songs: ${chart.songs.length}`);
 });
+```
 
-// Get a specific week's chart
+### Historical Charts
+
+```javascript
+// Get Hot 100 chart from a specific date
 getChart('hot-100', '2023-12-30', (err, chart) => {
   if (err) {
     console.error('Error:', err);
     return;
   }
   
-  console.log('Chart for week of:', chart.week);
-  console.log('Previous week:', chart.previousWeek);
-  console.log('Next week:', chart.nextWeek);
+  console.log(`Week of: ${chart.week}`);
+  console.log(`#1 Song: ${chart.songs[0].title} by ${chart.songs[0].artist}`);
+});
+```
+
+### Different Chart Types
+
+```javascript
+// Get Latin Songs chart
+getChart('latin-songs', (err, chart) => {
+  if (err) {
+    console.error('Error:', err);
+    return;
+  }
+  
+  console.log(`Latin Songs Chart - Week of: ${chart.week}`);
+  chart.songs.forEach(song => {
+    console.log(`${song.rank}. ${song.title} - ${song.artist}`);
+  });
 });
 
-// List all available charts
+// Get Artist 100 chart
+getChart('artist-100', (err, chart) => {
+  if (err) {
+    console.error('Error:', err);
+    return;
+  }
+  
+  console.log(`Artist 100 Chart - Week of: ${chart.week}`);
+  chart.songs.forEach(artist => {
+    console.log(`${artist.rank}. ${artist.artist}`);
+  });
+});
+```
+
+### Discover Available Charts
+
+```javascript
+// Get list of all available charts
 listCharts((err, charts) => {
   if (err) {
     console.error('Error:', err);
     return;
   }
   
-  console.log('Available charts:', charts);
+  console.log(`Found ${charts.length} charts:`);
+  charts.forEach(chart => {
+    console.log(`- ${chart.name}: ${chart.url}`);
+  });
 });
 ```
 
-### CommonJS (Legacy)
+## 📊 Chart Data Structure
+
+Each chart returns an object with the following structure:
 
 ```javascript
-const { getChart, listCharts } = require('@aribradshaw/billboard-top-100');
-
-// Same usage as above
-```
-
-## API Reference
-
-### `getChart(chartName, date, callback)`
-
-Fetches a specific Billboard chart.
-
-**Parameters:**
-- `chartName` (string): The name of the chart (e.g., 'hot-100', 'latin-songs', 'artist-100')
-- `date` (string, optional): The date in YYYY-MM-DD format. If omitted, gets the current week's chart
-- `callback` (function): Callback function with signature `(error, chart)`
-
-**Returns:**
-- `chart` object with the following structure:
-  ```javascript
-  {
-    week: '2023-12-30',
-    previousWeek: {
-      date: '2023-12-23',
-      url: 'http://www.billboard.com/charts/hot-100/2023-12-23'
-    },
-    nextWeek: {
-      date: '2024-01-06',
-      url: 'http://www.billboard.com/charts/hot-100/2024-01-06'
-    },
-    songs: [
-      {
-        rank: 1,
-        title: 'Song Title',
-        artist: 'Artist Name',
-        cover: 'https://charts-static.billboard.com/img/...',
-        position: {
-          positionLastWeek: 1,
-          peakPosition: 1,
-          weeksOnChart: 14
-        }
-      }
-      // ... more songs
-    ]
-  }
-  ```
-
-### `listCharts(callback)`
-
-Lists all available Billboard charts.
-
-**Parameters:**
-- `callback` (function): Callback function with signature `(error, charts)`
-
-**Returns:**
-- `charts` array with objects containing:
-  ```javascript
-  [
+{
+  week: '2025-08-16',
+  previousWeek: {
+    date: '2025-08-09',
+    url: 'http://www.billboard.com/charts/hot-100/2025-08-09'
+  },
+  nextWeek: {
+    date: '2025-08-23',
+    url: 'http://www.billboard.com/charts/hot-100/2025-08-23'
+  },
+  songs: [
     {
-      name: 'Hot 100',
-      url: 'http://www.billboard.com/charts/hot-100'
+      rank: 1,
+      title: 'Golden',
+      artist: 'HUNTR/X: EJAE, Audrey Nuna & REI AMI',
+      cover: 'https://charts-static.billboard.com/img/...',
+      position: {
+        positionLastWeek: 1,
+        peakPosition: 1,
+        weeksOnChart: 8
+      }
     }
-    // ... more charts
+    // ... more songs
   ]
-  ```
-
-## Available Charts
-
-- `hot-100` - Billboard Hot 100
-- `latin-songs` - Hot Latin Songs
-- `artist-100` - Artist 100
-- And many more! Use `listCharts()` to see all available charts.
-
-## Error Handling
-
-The library uses callback-style error handling:
-
-```javascript
-getChart('hot-100', (err, chart) => {
-  if (err) {
-    console.error('Error fetching chart:', err);
-    return;
-  }
-  
-  // Use chart data
-  console.log(chart);
-});
+}
 ```
 
-## Development
+## 🧪 Testing
+
+The library includes comprehensive test coverage:
+
+```bash
+npm test
+```
+
+**Test Coverage Includes:**
+- ✅ Core chart functionality (Hot 100, Latin Songs, Artist 100)
+- ✅ Historical chart retrieval
+- ✅ Error handling and edge cases
+- ✅ Data structure validation
+- ✅ Chart discovery functionality
+- ✅ Performance and concurrent request handling
+- ✅ Memory management validation
+
+## 🔧 Development
 
 ### Prerequisites
 
 - Node.js 18.0.0 or higher
-- npm
+- npm or yarn
 
 ### Setup
 
 ```bash
-git clone https://github.com/aribradshaw/billboard-top-100.git
-cd billboard-top-100
+git clone <repository-url>
+cd billboard-top-100-1
 npm install
 ```
 
 ### Running Tests
 
 ```bash
+# Run all tests
 npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run specific test file
+npm test -- test/test.js
 ```
 
-### Linting
+## 🚨 Error Handling
 
-```bash
-npm run lint
-```
+The library handles various error scenarios gracefully:
 
-## Changes from Original
+- **Invalid chart names**: Returns descriptive error messages
+- **Invalid dates**: Graceful fallback to current date or clear error
+- **Network issues**: Proper HTTP error handling
+- **Missing callbacks**: No crashes, graceful degradation
+- **HTML structure changes**: Robust parsing with fallback mechanisms
 
-This fork includes the following improvements over the original library:
+## 📈 Performance
 
-1. **Modern Dependencies**:
-   - Replaced deprecated `request` package with `node-fetch`
-   - Updated all dependencies to latest versions
-   - Removed security vulnerabilities
+- **Efficient Parsing**: Uses Cheerio for fast HTML parsing
+- **Memory Management**: No memory leaks during multiple requests
+- **Concurrent Support**: Handles multiple simultaneous chart requests
+- **Timeout Protection**: Configurable timeouts for network requests
 
-2. **ES Module Support**:
-   - Full ES module support with `import`/`export`
-   - Compatible with modern Node.js applications
-   - TypeScript-friendly
+## 🔄 Recent Updates
 
-3. **Better Error Handling**:
-   - Improved error messages
-   - More robust HTTP request handling
+### Version 3.0.5 - Latest Release
 
-4. **Code Quality**:
-   - Updated ESLint configuration
-   - Better code formatting
-   - Removed deprecated code patterns
+- ✅ **HTML Structure Fix**: Updated selectors to work with Billboard's new HTML layout (August 2025)
+- ✅ **Improved Chart Parsing**: Better title and artist extraction with cleaner text parsing
+- ✅ **Production Ready**: Comprehensive test suite with edge case coverage
+- ✅ **Enhanced Error Handling**: Robust error handling for all failure scenarios
+- ✅ **Performance Optimizations**: Memory management and concurrent request handling
 
-## License
+### Version 3.0.4
 
-MIT License - see the [LICENSE](LICENSE) file for details.
+- ✅ **Complete dependency cleanup**: All deprecated packages removed
+- ✅ **Native fetch implementation**: Uses Node.js 18+ native fetch for better performance
+- ✅ **Regenerated package-lock.json**: Synced with updated dependencies
+- ✅ **Clean npm installs**: No more deprecated warnings when installing
 
-## Contributing
+## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please ensure:
 
-## Disclaimer
+1. All tests pass (`npm test`)
+2. Code follows the existing style
+3. New features include appropriate tests
+4. Error handling is robust
 
-This library scrapes Billboard's website. Please be respectful of their servers and use this library responsibly. Billboard's terms of service should be reviewed before using this library in production applications.
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Original library by [darthbatman](https://github.com/darthbatman)
+- Updated and maintained for modern Node.js compatibility
+- Enhanced with comprehensive testing and error handling
+
+## 📞 Support
+
+If you encounter any issues or have questions:
+
+1. Check the [test suite](test/test.js) for usage examples
+2. Review the [changelog](CHANGELOG.md) for recent updates
+3. Open an issue with detailed error information
+
+---
+
+**Note**: This library is designed to be robust and production-ready, with comprehensive error handling and test coverage. It gracefully handles HTML structure changes from Billboard and provides reliable chart data access.

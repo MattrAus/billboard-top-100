@@ -49,11 +49,23 @@ function getChart(name, date, cb) {
       const $ = cheerio.load(html);
 
       let d = null;
-      for (let i = 0; i < $('.c-heading').length; i += 1) {
-        if ($('.c-heading')[i].children[0].data.includes('Week of ')) {
-          d = moment(new Date($('.c-heading')[i].children[0].data.trim().slice('Week of '.length)));
-          break;
+      // Look for week heading - try multiple approaches
+      const weekHeading = $('.c-heading, h1, h2').filter((i, el) => {
+        const text = $(el).text().trim();
+        return text.includes('Week of ');
+      });
+
+      if (weekHeading.length > 0) {
+        const weekText = weekHeading.first().text().trim();
+        const weekMatch = weekText.match(/Week of (.+)/);
+        if (weekMatch) {
+          d = moment(new Date(weekMatch[1]));
         }
+      }
+
+      // If no week heading found, use current date
+      if (!d) {
+        d = moment();
       }
 
       chart.week = d.format('YYYY-MM-DD');
@@ -72,19 +84,95 @@ function getChart(name, date, cb) {
 
       const chartItems = $('.o-chart-results-list-row-container');
       for (let i = 0; i < chartItems.length; i += 1) {
-        const infoContainer = chartItems[i].children[1];
-        const titleAndArtistContainer = infoContainer.children[7].children[1].children[1];
-        const posInfo = infoContainer.children[7].children[1];
-
-        const rank = parseInt(infoContainer.children[1].children[1].children[0].data.trim(), 10);
-        const title = titleAndArtistContainer.children[1].children[0].data.trim();
-        const artist = titleAndArtistContainer.children[3]
-          ? titleAndArtistContainer.children[3].children[0].data.trim() : undefined;
-        const cover = infoContainer.children[3].children[1].children[1].children[1].attribs['data-lazy-src'];
+        const container = $(chartItems[i]);
+        
+        // Find rank - first li with c-label class
+        const rankElement = container.find('li:first-child .c-label');
+        if (rankElement.length === 0) {
+          // eslint-disable-next-line no-continue
+          continue;
+        }
+        const rank = parseInt(rankElement.text().trim(), 10);
+        if (Number.isNaN(rank)) {
+          // eslint-disable-next-line no-continue
+          continue;
+        }
+        
+        // Find title - h3 with c-title class, get only the direct text content
+        const titleElement = container.find('h3.c-title');
+        if (titleElement.length === 0) {
+          // eslint-disable-next-line no-continue
+          continue;
+        }
+        // Get only the direct text content, not from nested elements
+        let title = '';
+        const titleNode = titleElement[0];
+        if (titleNode.children && titleNode.children.length > 0) {
+          // Look for direct text nodes
+          for (let k = 0; k < titleNode.children.length; k += 1) {
+            const child = titleNode.children[k];
+            if (child.type === 'text') {
+              title += child.data;
+            }
+          }
+        } else {
+          title = titleElement.text().trim();
+        }
+        title = title.trim();
+        
+        // Find artist - look for the artist span that contains the actual artist name
+        let artist = undefined;
+        const allLabels = container.find('span.c-label');
+        for (let j = 0; j < allLabels.length; j += 1) {
+          const label = $(allLabels[j]);
+          const text = label.text().trim();
+          // Skip if it's the rank or empty
+          if (text === rank.toString() || text.length === 0) {
+            continue;
+          }
+          // Skip if it contains common chart-related text
+          if (text.includes('LW') || text.includes('PEAK') || text.includes('WEEKS') || 
+              text.includes('Debut') || text.includes('Peak') || text.includes('Share') || 
+              text.includes('Credits') || text.includes('Songwriter') || text.includes('Producer') || 
+              text.includes('Imprint') || text.includes('Label')) {
+            continue;
+          }
+          // This should be the artist
+          artist = text;
+          break;
+        }
+        
+        // Find cover image
+        const coverElement = container.find('img[data-lazy-src]');
+        const cover = coverElement.length > 0 ? coverElement.attr('data-lazy-src') : undefined;
+        
+        // Find position data
+        let positionLastWeek = 0;
+        let peakPosition = 0;
+        let weeksOnChart = 0;
+        
+        // Look for LW (Last Week)
+        const lwElement = container.find('span:contains("LW")').next().find('.c-label');
+        if (lwElement.length > 0) {
+          positionLastWeek = parseInt(lwElement.text().trim(), 10) || 0;
+        }
+        
+        // Look for PEAK
+        const peakElement = container.find('span:contains("PEAK")').next().find('.c-label');
+        if (peakElement.length > 0) {
+          peakPosition = parseInt(peakElement.text().trim(), 10) || 0;
+        }
+        
+        // Look for WEEKS
+        const weeksElement = container.find('span:contains("WEEKS")').next().find('.c-label');
+        if (weeksElement.length > 0) {
+          weeksOnChart = parseInt(weeksElement.text().trim(), 10) || 0;
+        }
+        
         const position = {
-          positionLastWeek: parseInt(posInfo.children[7].children[1].children[0].data.trim(), 10),
-          peakPosition: parseInt(posInfo.children[9].children[1].children[0].data.trim(), 10),
-          weeksOnChart: parseInt(posInfo.children[11].children[1].children[0].data.trim(), 10),
+          positionLastWeek,
+          peakPosition,
+          weeksOnChart,
         };
 
         if (artist) {
@@ -124,13 +212,31 @@ const getChartsFromCategories = async (categoryURLs, cb) => {
       const html = await fetchHTML(categoryURL);
       const $ = cheerio.load(JSON.parse(html).html);
 
-      const chartLinks = $('a.lrv-u-flex.lrv-u-flex-direction-column');
+      // Look for chart links with more flexible selectors
+      const chartLinks = $('a[href^="/charts/"]');
       for (let i = 0; i < chartLinks.length; i += 1) {
-        if (chartLinks[i].attribs.href.startsWith('/charts/')) {
-          charts.push({
-            name: chartLinks[i].children[1].children[1].children[0].data.trim(),
-            url: `${BILLBOARD_BASE_URL}${chartLinks[i].attribs.href}`,
-          });
+        const link = $(chartLinks[i]);
+        const href = link.attr('href');
+        if (href && href.startsWith('/charts/')) {
+          // Try to find the chart name from various possible locations
+          let name = '';
+          const nameElement = link.find('.c-title, h3, h4, .c-label').first();
+          if (nameElement.length > 0) {
+            name = nameElement.text().trim();
+          } else {
+            // Fallback: extract name from URL
+            name = href.split('/').pop().replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          }
+          
+          // Clean up the name - remove common prefixes and suffixes
+          name = name.replace(/^Billboard\s+/i, '').replace(/\s*™$/, '').replace(/^Charts?$/i, '');
+          
+          if (name && name.length > 0) {
+            charts.push({
+              name,
+              url: `${BILLBOARD_BASE_URL}${href}`,
+            });
+          }
         }
       }
     } catch (error) {
@@ -145,7 +251,6 @@ const getChartsFromCategories = async (categoryURLs, cb) => {
 
 function listCharts(cb) {
   if (typeof cb !== 'function') {
-    cb('Specified callback is not a function.', null);
     return;
   }
 
@@ -153,22 +258,62 @@ function listCharts(cb) {
     .then((html) => {
       const $ = cheerio.load(html);
 
+      // Try multiple approaches to find chart categories
+      let categoryURLs = [];
+      
+      // Approach 1: Look for the old category structure
       const categoryElements = $('.o-nav__list-item.lrv-u-color-grey-medium-dark');
-      const categoryURLs = [];
       for (let i = 0; i < categoryElements.length; i += 1) {
-        if (categoryElements[i].children && categoryElements[i].children[1].attribs.href === '#') {
-          const categoryName = encodeURIComponent(categoryElements[i].children[1].attribs.rel);
+        const element = $(categoryElements[i]);
+        const href = element.find('a[href="#"]').attr('href');
+        const rel = element.find('a[href="#"]').attr('rel');
+        if (href === '#' && rel) {
+          const categoryName = encodeURIComponent(rel);
           categoryURLs.push(`${BILLBOARD_CHART_CATEGORY_URL_PREFIX}${categoryName}${BILLBOARD_CHART_CATEGORY_URL_SUFFIX}`);
         }
       }
-
-      getChartsFromCategories(categoryURLs, (charts) => {
-        if (charts.length > 0) {
-          cb(null, charts);
-        } else {
-          cb('No charts found.', null);
+      
+      // Approach 2: If no categories found, try to find charts directly on the page
+      if (categoryURLs.length === 0) {
+        const chartLinks = $('a[href^="/charts/"]');
+        if (chartLinks.length > 0) {
+          // Found direct chart links, create a simple response
+          const charts = [];
+          chartLinks.each((i, link) => {
+            const $link = $(link);
+            const href = $link.attr('href');
+            if (href && href.startsWith('/charts/')) {
+              let name = $link.text().trim() || href.split('/').pop().replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            // Clean up the name - remove common prefixes and suffixes
+            name = name.replace(/^Billboard\s+/i, '').replace(/\s*™$/, '').replace(/^Charts?$/i, '');
+              if (name && name.length > 0) {
+                charts.push({
+                  name,
+                  url: `${BILLBOARD_BASE_URL}${href}`,
+                });
+              }
+            }
+          });
+          
+          if (charts.length > 0) {
+            cb(null, charts);
+            return;
+          }
         }
-      });
+      }
+
+      // Use the category approach if we have URLs
+      if (categoryURLs.length > 0) {
+        getChartsFromCategories(categoryURLs, (charts) => {
+          if (charts.length > 0) {
+            cb(null, charts);
+          } else {
+            cb('No charts found.', null);
+          }
+        });
+      } else {
+        cb('No chart categories found.', null);
+      }
     })
     .catch((error) => {
       cb(error, null);

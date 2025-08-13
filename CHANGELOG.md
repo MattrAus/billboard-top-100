@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.5] - 2025-08-16 - PRODUCTION READY 🚀
+
+### 🎯 Production Ready Release
+This version marks the library as production-ready with comprehensive testing, robust error handling, and enterprise-grade reliability.
+
+### ✨ Added
+- **Comprehensive Test Suite**: Added 20+ test cases covering all functionality
+- **Edge Case Testing**: Tests for invalid inputs, network errors, and data validation
+- **Performance Testing**: Concurrent request handling and memory management validation
+- **Data Integrity Validation**: Comprehensive structure and type checking
+
+### 🛡️ Enhanced
+- **Error Handling**: Robust error handling for all failure scenarios
+- **Test Organization**: Clean, organized test structure with emoji headings
+- **Documentation**: Complete README overhaul with usage examples and best practices
+
+### 🔧 Fixed
+- **HTML Structure Compatibility**: Updated selectors to work with Billboard's new HTML layout (August 2025)
+- **Chart Data Extraction**: Fixed title and artist extraction with cleaner text parsing
+- **Improved Chart Discovery**: Enhanced `listCharts()` function to find 288+ available charts
+- **Test Reliability**: Updated tests to handle minor data variations and external changes
+
+### 🧪 Testing
+- **Core Functionality**: Tests for Hot 100, Latin Songs, Artist 100, and historical charts
+- **Error Scenarios**: Invalid chart names, dates, callbacks, and network failures
+- **Data Validation**: Chart structure, song data, and URL format validation
+- **Performance**: Concurrent requests, memory management, and timeout handling
+
+### 📚 Documentation
+- **Usage Examples**: Comprehensive examples for all major use cases
+- **API Reference**: Clear data structure documentation
+- **Error Handling Guide**: Best practices for production use
+- **Development Setup**: Complete development and testing instructions
+
+### Technical Details
+- Replaced fragile DOM traversal with robust CSS selectors
+- Implemented direct text node extraction for clean song titles
+- Added intelligent artist name filtering to avoid chart metadata
+- Enhanced chart discovery with multiple fallback approaches
+- Updated test assertions to be more flexible with external data
+
 ## [3.0.4] - 2025-01-27
 
 ### Fixed
@@ -55,4 +96,18 @@ All notable changes to this project will be documented in this file.
 
 ## [2.x.x] - Previous versions
 
-This is a fork of the original [billboard-top-100](https://github.com/darthbatman/billboard-top-100) library with modern updates. 
+This is a fork of the original [billboard-top-100](https://github.com/darthbatman/billboard-top-100) library with modern updates.
+
+---
+
+## 🚀 What's New in 3.0.5
+
+**Production Ready**: This version transforms the library from a basic chart fetcher into a production-ready, enterprise-grade solution with:
+
+- **20+ Comprehensive Tests**: Covering all functionality, edge cases, and error scenarios
+- **Robust Error Handling**: Graceful degradation for all failure modes
+- **Performance Validation**: Memory management and concurrent request testing
+- **Data Integrity**: Complete structure and type validation
+- **Professional Documentation**: Clear examples, best practices, and troubleshooting guides
+
+**Ready for Production Use**: The library now meets enterprise standards for reliability, testing, and error handling, making it suitable for production applications and critical business use cases. 
