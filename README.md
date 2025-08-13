@@ -175,7 +175,7 @@ npm test
 
 ```bash
 git clone <repository-url>
-cd billboard-top-100-1
+cd billboard-top-100
 npm install
 ```
 
