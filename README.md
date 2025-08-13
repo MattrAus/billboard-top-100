@@ -157,12 +157,12 @@ npm test
 
 **Test Coverage Includes:**
 - ✅ Core chart functionality (Hot 100, Latin Songs, Artist 100)
-- ✅ Historical chart retrieval
+- ✅ Historical chart retrieval and validation
 - ✅ Error handling and edge cases
-- ✅ Data structure validation
-- ✅ Chart discovery functionality
+- ✅ Data structure integrity validation
+- ✅ Chart discovery functionality (288+ charts)
 - ✅ Performance and concurrent request handling
-- ✅ Memory management validation
+- ✅ Memory management and leak prevention
 
 ## 🔧 Development
 
@@ -174,7 +174,7 @@ npm test
 ### Setup
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/aribradshaw/billboard-top-100.git
 cd billboard-top-100
 npm install
 ```
@@ -185,8 +185,8 @@ npm install
 # Run all tests
 npm test
 
-# Run tests with coverage
-npm run test:coverage
+# Run tests with verbose output
+npm test -- --reporter spec
 
 # Run specific test file
 npm test -- test/test.js
@@ -211,13 +211,13 @@ The library handles various error scenarios gracefully:
 
 ## 🔄 Recent Updates
 
-### Version 3.0.5 - Latest Release
+### Version 3.0.5 - Latest Release 🚀
 
+- ✅ **Production Ready**: Comprehensive test suite with 21 test cases and edge case coverage
 - ✅ **HTML Structure Fix**: Updated selectors to work with Billboard's new HTML layout (August 2025)
-- ✅ **Improved Chart Parsing**: Better title and artist extraction with cleaner text parsing
-- ✅ **Production Ready**: Comprehensive test suite with edge case coverage
 - ✅ **Enhanced Error Handling**: Robust error handling for all failure scenarios
 - ✅ **Performance Optimizations**: Memory management and concurrent request handling
+- ✅ **Professional Documentation**: Complete API reference and usage examples
 
 ### Version 3.0.4
 
